@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LyGPT</title>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a0a14;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Animation des étoiles */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 50%;
+            animation: twinkle linear infinite, move linear infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes move {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-100vh) translateX(-20px); }
+        }
+
+        /* En-tête */
+        header {
+            background-color: rgba(30, 30, 40, 0.8);
+            padding: 15px 20px;
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e0e0e0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            background-color: transparent;
+            border: 1px solid #666;
+            color: #ccc;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Contenu principal */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: calc(100vh - 200px);
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lygpt-message {
+            align-self: flex-start;
+            background-color: rgba(50, 50, 60, 0.8);
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: rgba(60, 60, 70, 0.8);
+            border-bottom-right-radius: 5px;
+        }
+
+        .error-message {
+            align-self: center;
+            background-color: rgba(100, 50, 50, 0.8);
+            border-radius: 18px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .typing-indicator {
+            align-self: flex-start;
+            background-color: rgba(50, 50, 60, 0.8);
+            border-radius: 18px;
+            padding: 12px 16px;
+            display: none;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #aaa;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .input-container {
+            display: flex;
+            margin-top: 20px;
+        }
+
+        .message-input {
+            flex: 1;
+            background-color: rgba(50, 50, 60, 0.8);
+            border: 1px solid #555;
+            border-radius: 8px 0 0 8px;
+            padding: 12px 15px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        .message-input::placeholder {
+            color: #999;
+        }
+
+        .send-btn {
+            background-color: #555;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            color: #e0e0e0;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .send-btn:hover {
+            background-color: #666;
+        }
+
+        .send-btn:disabled {
+            background-color: #333;
+            cursor: not-allowed;
+        }
+
+        /* Pied de page */
+        footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #888;
+            background-color: rgba(20, 20, 30, 0.8);
+            border-top: 1px solid #444;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-actions {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .action-btn {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+</style>
+</head>
+<body>
+  <!-- Fond d'étoiles animé -->
+  <div class="stars" id="stars"></div>
+
+  <!-- En-tête -->
+  <header>
+    <div class="logo">🚀 LyGPT</div>
+    <div class="header-actions">
+      <button class="action-btn" id="new-chat-btn">NOUVEAU CHAT</button>
+      <button class="action-btn" id="save-chat-btn">SAUVEGARDER</button>
+      <button class="action-btn" id="load-chat-btn">CHARGER</button>
+    </div>
+  </header>
+
+  <!-- Contenu principal -->
+  <main>
+    <div class="chat-area" id="chat" aria-live="polite" role="log">
+      <div class="message lygpt-message">
+        Salut ! De quoi as-tu besoin ? Je suis LyGPT, développé par Evan.
+      </div>
+    </div>
+
+    <div class="input-container">
+      <input type="text" class="message-input" id="q" placeholder="Ecrie quelque chose autiste va" />
+      <button class="send-btn" id="sendBtn">Envoyer</button>
+    </div>
+  </main>
+
+  <footer>Développé et réalisé par Evan Ouanoune</footer>
+
+<script>
+// Création des étoiles animées
+function createStars() {
+    const starsContainer = document.getElementById('stars');
+    const starCount = 150;
+    
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // Taille aléatoire entre 1 et 3 pixels
+        const size = Math.random() * 2 + 1;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // Position aléatoire
+        star.style.left = `${Math.random() * 100}vw`;
+        star.style.top = `${Math.random() * 100}vh`;
+        
+        // Durée d'animation aléatoire entre 3 et 8 secondes
+        const duration = Math.random() * 5 + 3;
+        star.style.animationDuration = `${duration}s`;
+        
+        // Délai d'animation aléatoire
+        const delay = Math.random() * 5;
+        star.style.animationDelay = `${delay}s`;
+        
+        starsContainer.appendChild(star);
+    }
+}
+
+// Initialiser les étoiles au chargement de la page
+window.addEventListener('load', createStars);
+
+// ---------- UTIL ----------
+function escapeHtml(unsafe){ 
+  return (unsafe||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); 
+}
+
+// ---------- CHAT RENDERING ----------
+const chatEl = document.getElementById("chat");
+function append(role, text){
+  const d = document.createElement("div");
+  d.className = role === "user" ? "message user-message" : "message lygpt-message";
+  let safe = escapeHtml(text);
+  safe = safe.replace(/```(js|py)?\n([\s\S]*?)```/g, (_,lang,code)=>{
+    return `<pre><code>${escapeHtml(code)}</code></pre>`;
+  }).replace(/\n/g,"<br>");
+  d.innerHTML = `<div>${safe}</div>`;
+  chatEl.appendChild(d);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+// ---------- OPENAI API CALL VIA BACKEND ----------
+async function sendOpenAI(userText){
+  try {
+    const resp = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userText })
+    });
+    const data = await resp.json();
+    return data.reply || "Pas de réponse.";
+  } catch(e) {
+    console.error(e);
+    return "Comming soon.";
+  }
+}
+
+// ---------- UI WIRING ----------
+document.getElementById("sendBtn").addEventListener("click", send);
+document.getElementById("q").addEventListener("keydown", e => { if(e.key === "Enter") send(); });
+
+async function send(){
+  const qEl = document.getElementById("q");
+  const v = (qEl.value||"").trim();
+  if(!v) return;
+  append("user", v);
+  qEl.value = "";
+  const response = await sendOpenAI(v);
+  append("bot", response);
+}
+
+// Bouton Nouveau Chat
+document.getElementById("new-chat-btn").addEventListener("click", function() {
+  // Effacer tous les messages sauf le premier
+  while (chatEl.children.length > 1) {
+      chatEl.removeChild(chatEl.lastChild);
+  }
+  
+  // Ajouter un message de confirmation
+  append("bot", "Nouveau chat créé ! Comment puis-je vous aider ?");
+});
+
+// Boutons de sauvegarde et chargement (simulation)
+document.getElementById("save-chat-btn").addEventListener("click", function() {
+  append("bot", "Fonctionnalité de sauvegarde bientôt disponible !");
+});
+
+document.getElementById("load-chat-btn").addEventListener("click", function() {
+  append("bot", "Fonctionnalité de chargement bientôt disponible !");
+});
+</script>
+</body>
+</html>

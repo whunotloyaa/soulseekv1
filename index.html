@@ -17,8 +17,165 @@
             color: #e0e0e0;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             overflow-x: hidden;
+        }
+
+        /* Sidebar gauche */
+        .sidebar {
+            width: 250px;
+            background-color: rgba(20, 20, 30, 0.9);
+            border-right: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #444;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+        }
+
+        .user-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px;
+            border-bottom: 1px solid #444;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-name {
+            font-size: 14px;
+        }
+
+        .login-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .login-btn:hover {
+            background-color: #3367d6;
+        }
+
+        .chats-section {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-item {
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-item.active {
+            background-color: rgba(66, 133, 244, 0.2);
+            border-left: 3px solid #4285f4;
+        }
+
+        .sidebar-actions {
+            padding: 20px;
+            border-top: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-btn {
+            background-color: transparent;
+            border: 1px solid #666;
+            color: #ccc;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .sidebar-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-btn.primary {
+            background-color: #555;
+            border-color: #555;
+        }
+
+        .sidebar-btn.primary:hover {
+            background-color: #666;
+        }
+
+        /* Contenu principal */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
         /* Animation des étoiles */
@@ -65,28 +222,13 @@
             color: #e0e0e0;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .action-btn {
-            background-color: transparent;
-            border: 1px solid #666;
-            color: #ccc;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s;
-        }
-
-        .action-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+        .chat-info {
+            font-size: 14px;
+            color: #888;
         }
 
         /* Contenu principal */
-        main {
+        .chat-container {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -94,6 +236,7 @@
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
+            height: calc(100vh - 130px);
         }
 
         .chat-area {
@@ -104,7 +247,6 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            max-height: calc(100vh - 200px);
         }
 
         .message {
@@ -172,7 +314,7 @@
 
         .input-container {
             display: flex;
-            margin-top: 20px;
+            margin-top: auto;
         }
 
         .message-input {
@@ -219,96 +361,233 @@
             border-top: 1px solid #444;
         }
 
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: rgba(30, 30, 40, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #555;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+            text-align: center;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            background-color: rgba(50, 50, 60, 0.8);
+            border: 1px solid #555;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .modal-btn.primary {
+            background-color: #4285f4;
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background-color: transparent;
+            color: #ccc;
+            border: 1px solid #666;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
-            .header-actions {
-                flex-direction: column;
-                gap: 5px;
+            .sidebar {
+                width: 200px;
             }
             
-            .action-btn {
-                font-size: 10px;
-                padding: 3px 6px;
+            .main-content {
+                margin-left: 200px;
+            }
+            
+            .chat-info {
+                display: none;
             }
             
             .message {
                 max-width: 90%;
             }
         }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                color: #e0e0e0;
+                font-size: 20px;
+                cursor: pointer;
+            }
+        }
 </style>
 </head>
 <body>
-  <!-- Fond d'étoiles animé -->
-  <div class="stars" id="stars"></div>
-
-  <!-- En-tête -->
-  <header>
-    <div class="logo">🌐 soulseek</div>
-    <div class="header-actions">
-      <button class="action-btn" id="new-chat-btn">NOUVEAU CHAT</button>
-      <button class="action-btn" id="save-chat-btn">SAUVEGARDER</button>
-      <button class="action-btn" id="load-chat-btn">CHARGER</button>
+  <!-- Sidebar gauche -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">🌐 LyGPT</div>
+      <div class="user-section">
+        <div class="user-info" id="user-info">
+          <div class="user-avatar" id="user-avatar">👤</div>
+          <div class="user-name" id="user-name">Invité</div>
+        </div>
+        <button class="login-btn" id="google-login-btn">
+          <span>G</span>
+          Se connecter avec Google
+        </button>
+      </div>
     </div>
-  </header>
+    
+    <div class="chats-section">
+      <div class="section-title">Chats</div>
+      <div class="chat-list" id="chat-list">
+        <!-- Les chats seront ajoutés dynamiquement ici -->
+      </div>
+    </div>
+    
+    <div class="sidebar-actions">
+      <button class="sidebar-btn primary" id="new-chat-sidebar">➕ Nouveau Chat</button>
+      <button class="sidebar-btn" id="save-chat-sidebar">💾 Sauvegarder</button>
+      <button class="sidebar-btn" id="load-chat-sidebar">📂 Charger</button>
+    </div>
+  </div>
 
   <!-- Contenu principal -->
-  <main>
-    <div class="chat-area" id="chat" aria-live="polite" role="log">
-      <div class="message lygpt-message">
-        Salut ! De quoi as-tu besoin ? Je suis soulseek , développé par Evan.
+  <div class="main-content">
+    <!-- Fond d'étoiles animé -->
+    <div class="stars" id="stars"></div>
+
+    <!-- En-tête -->
+    <header>
+      <div class="logo">🌐 LyGPT</div>
+      <div class="chat-info" id="current-chat-name">Chat Principal</div>
+    </header>
+
+    <!-- Zone de chat -->
+    <div class="chat-container">
+      <div class="chat-area" id="chat" aria-live="polite" role="log">
+        <div class="message lygpt-message">
+          Salut ! De quoi as-tu besoin ? Je suis LyGPT, développé par Evan.
+        </div>
+      </div>
+
+      <div class="input-container">
+        <input type="text" class="message-input" id="q" placeholder="Ecrie quelque chose autiste va" />
+        <button class="send-btn" id="sendBtn">Envoyer</button>
       </div>
     </div>
 
-    <div class="input-container">
-      <input type="text" class="message-input" id="q" placeholder="Ecrie quelque chose autiste va" />
-      <button class="send-btn" id="sendBtn">Envoyer</button>
-    </div>
-  </main>
+    <footer>Développé et réalisé par Evan Ouanoune</footer>
+  </div>
 
-  <footer>Développé et réalisé par Evan Ouanoune</footer>
+  <!-- Modal pour nouveau chat -->
+  <div class="modal" id="new-chat-modal">
+    <div class="modal-content">
+      <div class="modal-title">Nouveau Chat</div>
+      <input type="text" class="modal-input" id="new-chat-name" placeholder="Nom du chat" />
+      <div class="modal-buttons">
+        <button class="modal-btn secondary" id="cancel-new-chat">Annuler</button>
+        <button class="modal-btn primary" id="confirm-new-chat">Créer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal pour sauvegarde -->
+  <div class="modal" id="save-chat-modal">
+    <div class="modal-content">
+      <div class="modal-title">Sauvegarder le chat</div>
+      <input type="text" class="modal-input" id="save-chat-name" placeholder="Nom de sauvegarde" />
+      <div class="modal-buttons">
+        <button class="modal-btn secondary" id="cancel-save">Annuler</button>
+        <button class="modal-btn primary" id="confirm-save">Sauvegarder</button>
+      </div>
+    </div>
+  </div>
 
 <script>
-// Création des étoiles animées
-function createStars() {
-    const starsContainer = document.getElementById('stars');
-    const starCount = 150;
-    
-    for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.classList.add('star');
-        
-        // Taille aléatoire entre 1 et 3 pixels
-        const size = Math.random() * 2 + 1;
-        star.style.width = `${size}px`;
-        star.style.height = `${size}px`;
-        
-        // Position aléatoire
-        star.style.left = `${Math.random() * 100}vw`;
-        star.style.top = `${Math.random() * 100}vh`;
-        
-        // Durée d'animation aléatoire entre 3 et 8 secondes
-        const duration = Math.random() * 5 + 3;
-        star.style.animationDuration = `${duration}s`;
-        
-        // Délai d'animation aléatoire
-        const delay = Math.random() * 5;
-        star.style.animationDelay = `${delay}s`;
-        
-        starsContainer.appendChild(star);
-    }
-}
+// ---------- INITIALISATION ----------
+let currentChat = {
+  id: 'default',
+  name: 'Chat Principal',
+  messages: [
+    { role: 'bot', content: 'Salut ! De quoi as-tu besoin ? Je suis LyGPT, développé par Evan.' }
+  ]
+};
 
-// Initialiser les étoiles au chargement de la page
-window.addEventListener('load', createStars);
+let chats = JSON.parse(localStorage.getItem('lygpt_chats')) || {
+  'default': currentChat
+};
+
+let user = JSON.parse(localStorage.getItem('lygpt_user')) || null;
 
 // ---------- UTIL ----------
 function escapeHtml(unsafe){ 
   return (unsafe||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); 
 }
 
-// ---------- CHAT RENDERING ----------
-const chatEl = document.getElementById("chat");
-function append(role, text){
+// ---------- GESTION DES CHATS ----------
+function renderChat() {
+  const chatEl = document.getElementById("chat");
+  chatEl.innerHTML = '';
+  currentChat.messages.forEach(msg => {
+    append(msg.role, msg.content, false);
+  });
+}
+
+function append(role, text, saveToHistory = true){
+  const chatEl = document.getElementById("chat");
   const d = document.createElement("div");
   d.className = role === "user" ? "message user-message" : "message lygpt-message";
   let safe = escapeHtml(text);
@@ -318,9 +597,143 @@ function append(role, text){
   d.innerHTML = `<div>${safe}</div>`;
   chatEl.appendChild(d);
   chatEl.scrollTop = chatEl.scrollHeight;
+  
+  if (saveToHistory) {
+    currentChat.messages.push({ role, content: text });
+    saveCurrentChat();
+    updateChatList();
+  }
 }
 
-// ---------- OPENAI API CALL VIA BACKEND ----------
+function saveCurrentChat() {
+  chats[currentChat.id] = { ...currentChat };
+  localStorage.setItem('lygpt_chats', JSON.stringify(chats));
+}
+
+function updateChatList() {
+  const chatList = document.getElementById('chat-list');
+  const currentChatName = document.getElementById('current-chat-name');
+  
+  // Mettre à jour le nom du chat actuel
+  currentChatName.textContent = currentChat.name;
+  
+  // Mettre à jour la liste des chats
+  chatList.innerHTML = '';
+  
+  Object.values(chats).forEach(chat => {
+    const chatItem = document.createElement('div');
+    chatItem.className = `chat-item ${chat.id === currentChat.id ? 'active' : ''}`;
+    chatItem.textContent = chat.name;
+    chatItem.addEventListener('click', () => {
+      switchToChat(chat.id);
+    });
+    chatList.appendChild(chatItem);
+  });
+}
+
+function switchToChat(chatId) {
+  if (chats[chatId]) {
+    currentChat = { ...chats[chatId] };
+    renderChat();
+    updateChatList();
+  }
+}
+
+function createNewChat() {
+  document.getElementById('new-chat-name').value = `Chat ${Object.keys(chats).length}`;
+  document.getElementById('new-chat-modal').style.display = 'flex';
+}
+
+function confirmNewChat() {
+  const chatName = document.getElementById('new-chat-name').value.trim();
+  if (!chatName) return;
+  
+  const chatId = `chat_${Date.now()}`;
+  currentChat = {
+    id: chatId,
+    name: chatName,
+    messages: [
+      { role: 'bot', content: 'Nouveau chat créé ! Comment puis-je vous aider ?' }
+    ]
+  };
+  
+  chats[chatId] = { ...currentChat };
+  localStorage.setItem('lygpt_chats', JSON.stringify(chats));
+  
+  renderChat();
+  updateChatList();
+  closeModal('new-chat-modal');
+}
+
+function saveChat() {
+  document.getElementById('save-chat-name').value = currentChat.name;
+  document.getElementById('save-chat-modal').style.display = 'flex';
+}
+
+function confirmSave() {
+  const chatName = document.getElementById('save-chat-name').value.trim();
+  if (!chatName) return;
+  
+  currentChat.name = chatName;
+  saveCurrentChat();
+  updateChatList();
+  closeModal('save-chat-modal');
+  
+  append('bot', 'Chat sauvegardé avec succès !');
+}
+
+function loadChat() {
+  // Pour le moment, on montre juste la liste des chats
+  updateChatList();
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = 'none';
+}
+
+// ---------- CONNEXION GOOGLE ----------
+function initGoogleAuth() {
+  // Simulation de connexion Google pour Vercel
+  // En production, tu utiliserais Firebase Auth ou Google OAuth
+  
+  document.getElementById('google-login-btn').addEventListener('click', () => {
+    if (user) {
+      // Déconnexion
+      user = null;
+      localStorage.removeItem('lygpt_user');
+      updateUserUI();
+    } else {
+      // Connexion simulée
+      user = {
+        name: 'Utilisateur Google',
+        email: 'user@gmail.com',
+        avatar: 'G',
+        id: `user_${Date.now()}`
+      };
+      localStorage.setItem('lygpt_user', JSON.stringify(user));
+      updateUserUI();
+      append('bot', 'Connexion réussie ! Bon retour !');
+    }
+  });
+}
+
+function updateUserUI() {
+  const userNameEl = document.getElementById('user-name');
+  const userAvatarEl = document.getElementById('user-avatar');
+  const loginBtn = document.getElementById('google-login-btn');
+  
+  if (user) {
+    userNameEl.textContent = user.name;
+    userAvatarEl.textContent = user.avatar;
+    loginBtn.innerHTML = '<span>🚪</span> Se déconnecter';
+  } else {
+    userNameEl.textContent = 'Invité';
+    userAvatarEl.textContent = '👤';
+    loginBtn.innerHTML = '<span>G</span> Se connecter avec Google';
+  }
+}
+
+// ---------- API OPENAI ----------
 async function sendOpenAI(userText){
   try {
     const resp = await fetch("/api/chat", {
@@ -336,10 +749,6 @@ async function sendOpenAI(userText){
   }
 }
 
-// ---------- UI WIRING ----------
-document.getElementById("sendBtn").addEventListener("click", send);
-document.getElementById("q").addEventListener("keydown", e => { if(e.key === "Enter") send(); });
-
 async function send(){
   const qEl = document.getElementById("q");
   const v = (qEl.value||"").trim();
@@ -350,27 +759,72 @@ async function send(){
   append("bot", response);
 }
 
-// Bouton Nouveau Chat
-document.getElementById("new-chat-btn").addEventListener("click", function() {
-  // Effacer tous les messages sauf le premier
-  while (chatEl.children.length > 1) {
-      chatEl.removeChild(chatEl.lastChild);
+// ---------- INITIALISATION ----------
+function init() {
+  // Créer les étoiles
+  function createStars() {
+    const starsContainer = document.getElementById('stars');
+    const starCount = 150;
+    
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      
+      const size = Math.random() * 2 + 1;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      
+      star.style.left = `${Math.random() * 100}vw`;
+      star.style.top = `${Math.random() * 100}vh`;
+      
+      const duration = Math.random() * 5 + 3;
+      star.style.animationDuration = `${duration}s`;
+      
+      const delay = Math.random() * 5;
+      star.style.animationDelay = `${delay}s`;
+      
+      starsContainer.appendChild(star);
+    }
   }
   
-  // Ajouter un message de confirmation
-  append("bot", "Nouveau chat créé ! Comment puis-je vous aider ?");
-});
+  createStars();
+  
+  // Initialiser l'UI
+  updateUserUI();
+  updateChatList();
+  
+  // Événements
+  document.getElementById("sendBtn").addEventListener("click", send);
+  document.getElementById("q").addEventListener("keydown", e => { 
+    if(e.key === "Enter") send(); 
+  });
+  
+  // Boutons sidebar
+  document.getElementById("new-chat-sidebar").addEventListener("click", createNewChat);
+  document.getElementById("save-chat-sidebar").addEventListener("click", saveChat);
+  document.getElementById("load-chat-sidebar").addEventListener("click", loadChat);
+  
+  // Boutons modals
+  document.getElementById("confirm-new-chat").addEventListener("click", confirmNewChat);
+  document.getElementById("cancel-new-chat").addEventListener("click", () => closeModal('new-chat-modal'));
+  document.getElementById("confirm-save").addEventListener("click", confirmSave);
+  document.getElementById("cancel-save").addEventListener("click", () => closeModal('save-chat-modal'));
+  
+  // Fermer modals en cliquant en dehors
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal(modal.id);
+      }
+    });
+  });
+  
+  // Initialiser l'authentification Google
+  initGoogleAuth();
+}
 
-// Boutons de sauvegarde et chargement (simulation)
-document.getElementById("save-chat-btn").addEventListener("click", function() {
-  append("bot", "Fonctionnalité de sauvegarde bientôt disponible !");
-});
-
-document.getElementById("load-chat-btn").addEventListener("click", function() {
-  append("bot", "Fonctionnalité de chargement bientôt disponible !");
-});
+// Démarrer l'application
+window.addEventListener('load', init);
 </script>
 </body>
-
 </html>
-

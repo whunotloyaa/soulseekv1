@@ -125,6 +125,9 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .chat-item:hover {
@@ -134,6 +137,32 @@
         .chat-item.active {
             background-color: rgba(66, 133, 244, 0.2);
             border-left: 3px solid #4285f4;
+        }
+
+        .chat-item-content {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-item-delete {
+            display: none;
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+
+        .chat-item:hover .chat-item-delete {
+            display: block;
+        }
+
+        .chat-item-delete:hover {
+            background-color: rgba(255, 107, 107, 0.1);
         }
 
         .sidebar-actions {
@@ -500,7 +529,6 @@
     <div class="sidebar-actions">
       <button class="sidebar-btn primary" id="new-chat-sidebar">➕ Nouveau Chat</button>
       <button class="sidebar-btn" id="save-chat-sidebar">💾 Sauvegarder</button>
-      <button class="sidebar-btn" id="load-chat-sidebar">📂 Charger</button>
     </div>
   </div>
 
@@ -562,7 +590,7 @@ let currentChat = {
   id: 'default',
   name: 'Chat Principal',
   messages: [
-    { role: 'bot', content: 'Salut ! De quoi as-tu besoin ? Je suis LyGPT, développé par Evan.' }
+    { role: 'bot', content: 'Salut ! De quoi as-tu besoin ? Je suis soulseek, développé par Evan.' }
   ]
 };
 
@@ -623,10 +651,33 @@ function updateChatList() {
   Object.values(chats).forEach(chat => {
     const chatItem = document.createElement('div');
     chatItem.className = `chat-item ${chat.id === currentChat.id ? 'active' : ''}`;
-    chatItem.textContent = chat.name;
+    
+    const chatContent = document.createElement('div');
+    chatContent.className = 'chat-item-content';
+    chatContent.textContent = chat.name;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'chat-item-delete';
+    deleteBtn.innerHTML = '🗑️';
+    deleteBtn.title = 'Supprimer ce chat';
+    
+    // Empêcher la propagation du clic pour éviter de sélectionner le chat lors de la suppression
+    deleteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteChat(chat.id);
+    });
+    
+    chatItem.appendChild(chatContent);
+    
+    // Ne pas afficher le bouton supprimer pour le chat par défaut
+    if (chat.id !== 'default') {
+      chatItem.appendChild(deleteBtn);
+    }
+    
     chatItem.addEventListener('click', () => {
       switchToChat(chat.id);
     });
+    
     chatList.appendChild(chatItem);
   });
 }
@@ -639,8 +690,38 @@ function switchToChat(chatId) {
   }
 }
 
+function deleteChat(chatId) {
+  // Ne pas supprimer le chat par défaut
+  if (chatId === 'default') {
+    append('bot', 'Le chat par défaut ne peut pas être supprimé.');
+    return;
+  }
+  
+  // Demander confirmation
+  if (!confirm(`Êtes-vous sûr de vouloir supprimer "${chats[chatId].name}" ?`)) {
+    return;
+  }
+  
+  // Supprimer le chat
+  delete chats[chatId];
+  localStorage.setItem('lygpt_chats', JSON.stringify(chats));
+  
+  // Si on a supprimé le chat actuel, passer au chat par défaut
+  if (chatId === currentChat.id) {
+    switchToChat('default');
+  }
+  
+  // Mettre à jour la liste
+  updateChatList();
+  
+  // Afficher un message de confirmation
+  if (chatId !== currentChat.id) {
+    append('bot', `Le chat "${chats[chatId]?.name || 'supprimé'}" a été supprimé.`);
+  }
+}
+
 function createNewChat() {
-  document.getElementById('new-chat-name').value = `Chat ${Object.keys(chats).length}`;
+  document.getElementById('new-chat-name').value = `Chat ${Object.keys(chats).length + 1}`;
   document.getElementById('new-chat-modal').style.display = 'flex';
 }
 
@@ -680,11 +761,6 @@ function confirmSave() {
   closeModal('save-chat-modal');
   
   append('bot', 'Chat sauvegardé avec succès !');
-}
-
-function loadChat() {
-  // Pour le moment, on montre juste la liste des chats
-  updateChatList();
 }
 
 function closeModal(modalId) {
@@ -802,7 +878,6 @@ function init() {
   // Boutons sidebar
   document.getElementById("new-chat-sidebar").addEventListener("click", createNewChat);
   document.getElementById("save-chat-sidebar").addEventListener("click", saveChat);
-  document.getElementById("load-chat-sidebar").addEventListener("click", loadChat);
   
   // Boutons modals
   document.getElementById("confirm-new-chat").addEventListener("click", confirmNewChat);
@@ -828,6 +903,3 @@ window.addEventListener('load', init);
 </script>
 </body>
 </html>
-
-
-
